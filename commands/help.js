@@ -17,20 +17,12 @@ module.exports = {
 			message.author.displayAvatarURL({ dynamic: true })
 		);
 		helpEmbed.addFields(
+			//? main (bank) commands
 			{
 				name: '` balance (участник) `',
 				value: `показывает ваш баланс или баланс указанного пользователя`,
 				inline: true,
 			},
-			{
-				name: '` leaderboard `',
-				value: `10 лучших игроков на сервере`,
-				inline: true,
-			},
-			// {
-			// 	name: '** **',
-			// 	value: '** **',
-			// },
 			{
 				name: '` withdraw <сумма> `',
 				value: `снятие денег из банка`,
@@ -41,24 +33,12 @@ module.exports = {
 				value: `внос денег в банк`,
 				inline: true,
 			},
-			// {
-			// 	name: '** **',
-			// 	value: '** **',
-			// },
+			//? make-money commands
 			{
 				name: '` work `',
 				value: `позволяет получить деньги, работая`,
 				inline: true,
 			},
-			{
-				name: '` daily `',
-				value: `забрать свою ежедневную награду`,
-				inline: true,
-			},
-			// {
-			// 	name: '** **',
-			// 	value: '** **',
-			// },
 			{
 				name: '` crime `',
 				value: `рискованно, но награда стоит того`,
@@ -69,38 +49,44 @@ module.exports = {
 				value: `позволяет воровать деньги у других пользователей`,
 				inline: true
 			},
-			// {
-			// 	name: '** **',
-			// 	value: '** **',
-			// },
+			//? shop system
 			{
-				name: '` jackpot <ставка> `',
-				value: `испытайте удачу и посторайтесь отгадать как можно больше цифр`,
+				name: '` shop `',
+				value: `показывает все предметы в магазине`,
 				inline: true,
 			},
+			{
+				name: '` item-create `',
+				value: `(только администраторы) интерактивное создание нового предмета`,
+				inline: true,
+			},
+			{
+				name: '` item-delete `',
+				value: `(только администраторы) интерактивное удаление предмета`,
+				inline: true,
+			},
+			//? other ways of making money
 			{
 				name: '` pay <участник> <сумма> `',
 				value: `перевости определенную сумму денег другому пользователю`,
 				inline: true,
 			},
-			// {
-			// 	name: '** **',
-			// 	value: '** **',
-			// },
+			{
+				name: '` duel <ставка> <участник> `',
+				value: `вызовите участника на дуель`,
+				inline: true,
+			},
+			{
+				name: '` jackpot <ставка> `',
+				value: `испытайте удачу и посторайтесь отгадать как можно больше цифр`,
+				inline: true,
+			},
+			//? admin commands
 			{
 				name: '` giveaway <сумма> <время> `',
 				value: `(только администраторы) позволяет проводить розыгрыш валюты`,
 				inline: true,
 			},
-			{
-				name: '` duel <ставка> <участник> `',
-				value: `--`,
-				inline: true,
-			},
-			// {
-			// 	name: '** **',
-			// 	value: '** **',
-			// },
 			{
 				name: '` add <участник> [cash | bank] <сумма> `',
 				value: `(только администраторы) добавляет указанную сумму денег выбранному пользователю`,
@@ -111,10 +97,12 @@ module.exports = {
 				value: `(только администраторы) удаляет указанную сумму денег у указанного пользователя`,
 				inline: true,
 			},
-			// {
-			// 	name: '** **',
-			// 	value: '** **',
-			// },
+			//? informative commands
+			{
+				name: '` leaderboard `',
+				value: `10 лучших игроков на сервере`,
+				inline: true,
+			},
 			{
 				name: '` help `',
 				value: `список всех команд`,
@@ -124,10 +112,17 @@ module.exports = {
 				name: '` ping `',
 				value: `присылает пинг бота`,
 				inline: true,
-			}
+			},
+            //? other
+            {
+                name: '` daily `',
+                value: `забрать свою ежедневную награду`,
+                inline: true,
+            },
 		);
 		helpEmbed.setColor('F8C300');
 		helpEmbed.setTimestamp();
+		helpEmbed.addField('** **', '*` <> ` необходимые аргументы\n` [] ` необходимые аргументы из выбора\n` () ` не обязательные аргументы*');
 
 		message.channel.send(helpEmbed);
 	},

@@ -1,13 +1,16 @@
 //! imports
 const { Collection, Client, Intents } = require('discord.js');
 
+const fs = require('fs');
+const config = require('./config.json');
+const MoneySchema = require('./money-schema');
+
+
+//! intents
 const intents = new Intents();
 intents.add(Intents.ALL)
 const client = new Client({ ws: { intents: intents } });
 
-const fs = require('fs');
-const config = require('./config.json');
-const MoneySchema = require('./money-schema');
 
 //! mongo
 const mongo = require('mongoose');
@@ -15,6 +18,7 @@ mongo.connect('mongodb+srv://sashking:OYfFJXybLD3Yegdw@cluster0.2myku.mongodb.ne
 	.then(console.log('💾  Подключен к MongoDB!'));
 
 module.exports = client;
+
 
 //! client variables
 client.emoji = config.emoji;
@@ -84,5 +88,6 @@ client.remove = (id, amount, type, message) => {
 		data.save();
 	});
 };
+
 
 client.login(config.token);

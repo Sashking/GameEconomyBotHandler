@@ -19,8 +19,8 @@ module.exports = {
 
         if (!user) return message.channel.send(invalidUseEmbed);
 
-		if (user === message.author) {
-			message.channel.send(
+		if (user.id === message.author.id) {
+			return message.channel.send(
                 new MessageEmbed()
                     .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
                     .setDescription(`Вы не можете ограбить самого себя!`)

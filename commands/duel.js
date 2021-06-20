@@ -32,7 +32,7 @@ module.exports = {
         bet = parseInt(args[0]);
 
         if (opponent.id === message.author.id) {
-            message.channel.send(
+            return message.channel.send(
                 new MessageEmbed()
                     .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
                     .setDescription(`Вы не можете играть с самим собой!`)
@@ -76,7 +76,62 @@ module.exports = {
                 .then((collected) => {
                     if (collected.first().content == 'yes') {
                         //! yes
-                        
+                        const gameEmbed = new MessageEmbed()
+                            .setTitle(`\`${message.author.username}\` vs \`${opponent.user.username}\``)
+                            .setDescription(`*Напишите слово \`shoot\` больше раз чем ваш противник! У вас есть 10 секунд*`)
+                            .setColor('F8C300')
+                            .setTimestamp()
+
+                        message.channel.send(gameEmbed)
+                            .then(() => {
+                                const filter = m => m.author.id === message.author.id && m.content === "shoot" || m.author.id === opponent.user.id && m.content === "shoot";
+                                const collector = message.channel.createMessageCollector(filter, { time: 10000 });
+
+                                let authorPoints = 0;
+                                let opponentPoints = 0;
+
+                                collector.on('collect', m => {
+                                    if (m.author.id === message.author.id) {
+                                        authorPoints++;
+                                    } else if (m.author.id === opponent.user.id) {
+                                        opponentPoints++;
+                                    }
+                                });
+                                
+                                collector.on('end', async collected => {
+                                    // if author won
+                                    if (authorPoints > opponentPoints) {
+                                        await client.remove(opponent.user.id, bet, 'cash', message);
+                                        await client.add(message.author.id, bet, 'cash', message);
+
+                                        message.channel.send(
+                                            new MessageEmbed()
+                                                .setDescription(`${message.author} победил (${authorPoints} балла/ов) над **${opponent.user.username}** (${opponentPoints} балла/ов)\n\n+ ${client.emoji} ${bet}`)
+                                                .setColor('A652BB')
+                                                .setTimestamp()
+                                        )
+                                    // if opponent won
+                                    } else if (opponentPoints > authorPoints) {
+                                        await client.remove(message.author.id, bet, 'cash', message);
+                                        await client.add(opponent.user.id, bet, 'cash', message);
+
+                                        message.channel.send(
+                                            new MessageEmbed()
+                                                .setDescription(`${opponent.user} победил (${opponentPoints} балла/ов) над **${message.author.username}** (${authorPoints} балла/ов)\n\n+ ${client.emoji} ${bet}`)
+                                                .setColor('A652BB')
+                                                .setTimestamp()
+                                        )
+                                    // if it is a tie 
+                                    } else {
+                                        message.channel.send(
+                                            new MessageEmbed()
+                                                .setDescription(`Ничья 🤷‍♂️\n\n+ ${client.emoji} 0`)
+                                                .setColor('FD0061')
+                                                .setTimestamp()
+                                        )
+                                    }
+                                });
+                            })
                     
                     } else if(collected.first().content == 'no') {
                         return message.channel.send(

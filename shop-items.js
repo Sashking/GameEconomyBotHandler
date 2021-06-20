@@ -5,6 +5,7 @@ const Schema = new mongo.Schema({
 	Name: String,
 	Price: Number,
 	Description: String,
+	Role: String,
 });
 
 module.exports = mongo.model('shop-items', Schema);

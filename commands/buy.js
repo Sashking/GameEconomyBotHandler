@@ -14,7 +14,7 @@ module.exports = {
         /**
 		 * A: #buy Apple
 		 * B: Bought Apple!
-		*/ 
+		*/
 
         let itemName = args.join(" ");
 
@@ -35,6 +35,19 @@ module.exports = {
                     .setDescription(`Успешно куплен предмет **${itemName}**`)
                     .setColor('00D166')
                     .setTimestamp()
+                
+                if (data.Role) {
+                    if (message.guild.roles.cache.get(data.Role).position < message.guild.members.resolve(client.user).roles.highest.position) {
+                        message.member.roles.add(message.guild.roles.cache.get(data.Role));
+                    } else {
+                        return message.channel.send(
+                            new MessageEmbed()
+                                .setDescription(`Ошибка! \n\nПереместите мою роль выше чем роль ${data.Name}, чтобы я мог её выдавать!`)
+                                .setColor('F93A2F')
+                                .setTimestamp()
+                        )
+                    }
+                }
                 
                 if (await client.balance(message.author.id, 'cash', message) < data.Price) {
                     const notEnoughMoneyEmbed = new MessageEmbed()

@@ -40,30 +40,38 @@ module.exports = {
 					max: 1,
 					time: 30000,
 					errors: ['time']
-				}).then(async message => {
-					message = message.first()
-					if (message.content === 'cancel') return message.channel.send(`Отмена действия.`);
-					itemName = message.content;
+				}).then(async msg => {
+					msg = msg.first()
+					if (msg.content === 'cancel') return msg.channel.send(`Отмена действия.`);
+					let isRole = false;
+					if (msg.mentions.roles.first()) {
+						itemRole = msg.mentions.roles.first();
+						itemName = itemRole.name;
+						isRole = true;
+					} else {
+						itemName = msg.content;
+					}
+					
 
-					await Schema.findOne({ Guild: message.guild.id, Name: itemName }, (err, data) => {
+					await Schema.findOne({ Guild: msg.guild.id, Name: itemName }, (err, data) => {
 						if (data) {
-							return message.channel.send(
+							return msg.channel.send(
 								new MessageEmbed()
-									.setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+									.setAuthor(msg.author.tag, msg.author.displayAvatarURL({ dynamic: true }))
 									.setDescription(`Предмет с таким названием уже существует - отменяю действие`)
 									.setColor('F93A2F')
 							)
 						} else {
 							//! PRICE
-							let filter = msg => msg.author.id === message.author.id && !isNaN(msg.content) || msg.author.id === message.author.id && msg.content.toLowerCase() === "cancel";
-							message.channel.send(
+							let filter = msg => msg.author.id === msg.author.id && !isNaN(msg.content) || msg.author.id === msg.author.id && msg.content.toLowerCase() === "cancel";
+							msg.channel.send(
 								new MessageEmbed()
-									.setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+									.setAuthor(msg.author.tag, msg.author.displayAvatarURL({ dynamic: true }))
 									.setDescription(`Пожалуйста, введите **стоимость** нового продукта`)
 									.setColor('0099E1')
 									.setFooter('Чтобы отменить это действие, напишите cancel')
 								).then(() => {
-									message.channel.awaitMessages(filter, {
+									msg.channel.awaitMessages(filter, {
 										max: 1,
 										time: 30000,
 										errors: ['time']
@@ -96,6 +104,7 @@ module.exports = {
 														Name: itemName,
 														Price: itemPrice,
 														Description: itemDesc,
+														Role: isRole ? itemRole.id : '',
 													}).save().then(() => {
 
 														const successEmbed = new MessageEmbed()
@@ -114,7 +123,7 @@ module.exports = {
 											})
 									})
 									//! Price timeout
-									.catch(collected => { if (!collected) return message.channel.send('Вы не ответили вовремя - отменяю действие.'); });
+									.catch(collected => { if (!collected) return msg.channel.send('Вы не ответили вовремя - отменяю действие.'); });
 								})
 						}
 					})

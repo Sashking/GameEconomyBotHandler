@@ -136,7 +136,9 @@ module.exports = {
                     await client.add(message.author.id, winnings, 'cash', message);
                     msg.channel.send(finalEmbed);
 
-                }).catch(collected => message.reply('Вы не ответили в течение минуты, поэтому я отменил игру.'));
+                }).catch(collected => {
+                    if (!collected) return message.reply('Вы не ответили в течение минуты, поэтому я отменил игру.');
+                })
             })
 	},
 };
